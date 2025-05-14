@@ -19,7 +19,7 @@ class Article
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $decription = null;
+    private ?string $description = null;
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
@@ -59,21 +59,21 @@ class Article
         return $this;
     }
 
-    public function getDecription(): ?string
+    public function getDescription(): ?string
     {
-        return $this->decription;
+        return $this->description;
     }
 
-    public function setDecription(string $decription): static
+    public function setDescription(string $description): static
     {
-        $this->decription = $decription;
+        $this->description = $description;
 
         return $this;
     }
 
     public function getImage(): ?string
     {
-        return $this->image;
+        return $this->image ? 'uploads/images/' . $this->image : null;
     }
 
     public function setImage(string $image): static
