@@ -3,37 +3,30 @@
 {% block title %}Article index{% endblock %}
 
 {% block body %}
-    <h1>Article index</h1>
+    <h1>Article </h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Decription</th>
-                <th>Image</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    
         {% for article in articles %}
-            <tr>
-                <td>{{ article.id }}</td>
-                <td>{{ article.title }}</td>
-                <td>{{ article.decription }}</td>
-                <td>{{ article.image }}</td>
-                <td>
-                    <a href="{{ path('app_article_show', {'id': article.id}) }}">show</a>
+           <div class="card" style="width: 25rem;">
+                    <img src="{{ asset(article.image) }}" class="card-img-top img-fluid" alt="Image de l'article" style="max-width: 300px;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text">{{ article.description }}</p>
+                </div>
+                   {% for cat in article.categorie %}
+                    <span class="badge bg-primary">{{ cat.title }}</span>
+                   {% endfor %}
+
+                 <a href="{{ path('app_article_show', {'id': article.id}) }}">show</a>
                     <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
-                </td>
-            </tr>
+           </div>
+
+                   
+              
         {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
+           
         {% endfor %}
-        </tbody>
-    </table>
+     
 
     <a href="{{ path('app_article_new') }}">Create new</a>
 {% endblock %}

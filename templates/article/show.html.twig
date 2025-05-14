@@ -18,11 +18,15 @@
             </tr>
             <tr>
                 <th>Decription</th>
-                <td>{{ article.decription }}</td>
+                <td>{{ article.description }}</td>
             </tr>
             <tr>
                 <th>Image</th>
-                <td>{{ article.image }}</td>
+                <td>
+                {% if article.image %}
+                                  <img src="{{ asset('uploads/' ~ article.image) }}" class="img-fluid my-3" alt="Image de l'article">
+                {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
@@ -43,7 +47,8 @@
 
     <h4>Ajouter un commentaire</h4>
     {{ form_start(commentaireForm) }}
-        {{ form_row(commentaireForm.content) }}
+        {{ form_row(commentaireForm.auteur) }}
+        {{ form_row(commentaireForm.contenu) }}
         {{ form_row(commentaireForm.submit) }}
     {{ form_end(commentaireForm) }}
     <a href="{{ path('app_article_index') }}">back to list</a>
