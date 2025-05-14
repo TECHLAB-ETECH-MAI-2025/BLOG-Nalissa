@@ -3,6 +3,7 @@
 {% block title %}Article{% endblock %}
 
 {% block body %}
+<div class="container mt-4">
     <h1>Article</h1>
 
     <table class="table">
@@ -25,10 +26,30 @@
             </tr>
         </tbody>
     </table>
+<hr>
 
+    <h4>Commentaires :</h4>
+     {% for commentaire in article.Commentaires %}
+        <div class="card mb-2">
+            <div class="card-body">
+                {{ commentaire.description }}
+                <div class="text-muted small text-end">{{ commentaire.createdAt|date('d/m/Y H:i') }}</div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-muted">Aucun commentaire pour cet article.</p>
+    {% endfor %}
+<hr>
+
+    <h4>Ajouter un commentaire</h4>
+    {{ form_start(commentaireForm) }}
+        {{ form_row(commentaireForm.content) }}
+        {{ form_row(commentaireForm.submit) }}
+    {{ form_end(commentaireForm) }}
     <a href="{{ path('app_article_index') }}">back to list</a>
 
     <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
 
     {{ include('article/_delete_form.html.twig') }}
+</div>
 {% endblock %}
