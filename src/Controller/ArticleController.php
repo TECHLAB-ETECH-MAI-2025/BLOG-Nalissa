@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Form\Article1Form;
+use App\Form\ArticleForm;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+
 
 #[Route('/article')]
 final class ArticleController extends AbstractController
@@ -23,13 +26,30 @@ final class ArticleController extends AbstractController
     }
 
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,  SluggerInterface $slugger): Response
     {
         $article = new Article();
-        $form = $this->createForm(Article1Form::class, $article);
+        $form = $this->createForm(ArticleForm::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+             $imageFile = $form->get('image')->getData();
+             if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('upload_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                // Gérer l’erreur
+            }
+
+            $article->setImage('uploads/images/' . $newFilename);
+        }
             $entityManager->persist($article);
             $entityManager->flush();
 
@@ -53,7 +73,7 @@ final class ArticleController extends AbstractController
     #[Route('/{id}/edit', name: 'app_article_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Article1Form::class, $article);
+        $form = $this->createForm(ArticleForm::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -77,5 +97,5 @@ final class ArticleController extends AbstractController
         }
 
         return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
-    }
+    }   
 }
