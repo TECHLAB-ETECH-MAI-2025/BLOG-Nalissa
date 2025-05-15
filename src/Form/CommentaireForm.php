@@ -6,6 +6,7 @@ use App\Entity\Commentaire;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CommentaireForm extends AbstractType
 {
@@ -14,6 +15,10 @@ class CommentaireForm extends AbstractType
         $builder
             ->add('auteur')
             ->add('contenu')
+            ->add('submit', SubmitType::class, [
+                'label' => 'Envoyer',
+                'attr' => ['class' => 'btn btn-success']
+            ])
         ;
     }
 
