@@ -12,7 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-
+use App\Entity\Commentaire;
+use App\Form\CommentaireForm;
 
 #[Route('/article')]
 final class ArticleController extends AbstractController
@@ -48,7 +49,7 @@ final class ArticleController extends AbstractController
                 // Gérer l’erreur
             }
 
-            $article->setImage('uploads/images/' . $newFilename);
+            $article->setImage($newFilename);
         }
             $entityManager->persist($article);
             $entityManager->flush();
@@ -62,11 +63,26 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_article_show', methods: ['GET'])]
-    public function show(Article $article): Response
+    #[Route('/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
+    public function show(Article $article, Request $request, EntityManagerInterface $em): Response
     {
+
+            $commentaire = new Commentaire();
+            $commentaire->setArticle($article);
+
+            $commentaireForm = $this->createForm(CommentaireForm::class, $commentaire);
+             $commentaireForm->handleRequest($request);
+
+             if ($commentaireForm->isSubmitted() && $commentaireForm->isValid()) {
+                    $em->persist($commentaire);
+                    $em->flush();
+
+        return $this->redirectToRoute('app_article_show', ['id' => $article->getId()]);
+    }
+
         return $this->render('article/show.html.twig', [
             'article' => $article,
+             'commentaireForm' => $commentaireForm->createView(), // ⬅️ important !
         ]);
     }
 

@@ -24,9 +24,9 @@ class ArticleForm extends AbstractType
             'class' => Categorie::class,
             'choice_label' => 'title',
             'multiple' => true,
-            'expanded' => false, // mettre true pour des cases à cocher
+            'expanded' => true, // mettre true pour des cases à cocher
             'label' => 'Catégories',
-            'attr' => ['class' => 'form-select', 'size' => 1],
+            'attr' => ['class' => 'form-select', 'size' => 5],
         ])
         ->add('image', FileType::class, [
             'label' => 'Choisir une image',
@@ -34,7 +34,7 @@ class ArticleForm extends AbstractType
             'required' => false,
             'constraints' => [
                 new File([
-                    'maxSize' => '2M',
+                    'maxSize' => '4M',
                     'mimeTypes' => ['image/jpeg', 'image/png'],
                     'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG ou PNG)',
                 ])

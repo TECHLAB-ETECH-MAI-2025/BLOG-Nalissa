@@ -1,13 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Article{% endblock %}
+{% block title %}✏️ Modifier l'article{% endblock %}
 
 {% block body %}
-    <h1>Edit Article</h1>
+<div class="container py-5">
+    <div class="card shadow-lg p-4">
+        <h1 class="mb-4 text-primary">✏️ Modifier l'article</h1>
 
-    {{ include('article/_form.html.twig', {'button_label': 'Update'}) }}
+        <div class="mb-4">
+            {{ include('article/_form.html.twig', {'button_label': '💾 Mettre à jour'}) }}
+        </div>
 
-    <a href="{{ path('app_article_index') }}">back to list</a>
+        <div class="d-flex justify-content-between mt-3">
+            <a href="{{ path('app_article_index') }}" class="btn btn-outline-secondary">
+                ⬅️ Retour à la liste
+            </a>
 
-    {{ include('article/_delete_form.html.twig') }}
+            <form method="post" action="{{ path('app_article_delete', {'id': article.id}) }}" 
+                  onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');"
+                  class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                <button class="btn btn-danger">🗑️ Supprimer</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

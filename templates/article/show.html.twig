@@ -1,60 +1,77 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Article</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ article.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ article.title }}</td>
-            </tr>
-            <tr>
-                <th>Decription</th>
-                <td>{{ article.description }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>
-                {% if article.image %}
-                                  <img src="{{ asset('uploads/' ~ article.image) }}" class="img-fluid my-3" alt="Image de l'article">
-                {% endif %}
-                </td>
-            </tr>
-        </tbody>
-    </table>
-<hr>
-
-    <h4>Commentaires :</h4>
-     {% for commentaire in article.Commentaires %}
-        <div class="card mb-2">
-            <div class="card-body">
-                {{ commentaire.description }}
-                <div class="text-muted small text-end">{{ commentaire.createdAt|date('d/m/Y H:i') }}</div>
+            <div class="card mx-auto mb-4" style="width: 50rem;">
+                <div class="card-body">
+                                {% if article.image  %}
+                                        <img src="{{ asset(article.image) }}"
+                            class="card-img-top"
+                            style="height: 380px; object-fit: cover;"
+                            alt="Image de l'article">
+                                {% else %}
+                                 <p class="text-muted">Aucune image</p>
+                                {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.description }}</p>
+                            {% for cat in article.categorie %}
+                                <span class="badge bg-primary me-1">{{ cat.title }}</span>
+                            {% endfor %}
+                        </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary btn-sm">✏️ Modifier</a>
+                        <a href="{{ path('app_article_index') }}" class="btn btn-outline-primary btn-sm">← Retour à la liste</a>
+                    </div>
+                </div>
             </div>
+
+
+            <h4 class="mt-4">🗨️ Commentaires</h4>
+
+            {% if article.commentaires|length > 0 %}
+                {% for commentaire in article.commentaires %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="mb-1 text-primary">👤 {{ commentaire.auteur }}</h6>
+                            <p class="mb-0">💬 {{ commentaire.contenu }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">Aucun commentaire pour cet article.</p>
+            {% endif %}
+
+            <hr>
+
+            <h4 class="mt-4">➕ Ajouter un commentaire</h4>
+            <div class="card p-4 mb-5 shadow-sm">
+                {{ form_start(commentaireForm) }}
+                    <div class="mb-3">
+                        {{ form_label(commentaireForm.auteur) }}
+                        {{ form_widget(commentaireForm.auteur, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(commentaireForm.contenu) }}
+                        {{ form_widget(commentaireForm.contenu, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="text-end">
+                        <button class="btn btn-success" type="submit">💬 Poster le commentaire</button>
+                    </div>
+                {{ form_end(commentaireForm) }}
+            </div>
+
+            <div class="text-end">
+                {{ include('article/_delete_form.html.twig') }}
+            </div>
+
         </div>
-    {% else %}
-        <p class="text-muted">Aucun commentaire pour cet article.</p>
-    {% endfor %}
-<hr>
-
-    <h4>Ajouter un commentaire</h4>
-    {{ form_start(commentaireForm) }}
-        {{ form_row(commentaireForm.auteur) }}
-        {{ form_row(commentaireForm.contenu) }}
-        {{ form_row(commentaireForm.submit) }}
-    {{ form_end(commentaireForm) }}
-    <a href="{{ path('app_article_index') }}">back to list</a>
-
-    <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
-
-    {{ include('article/_delete_form.html.twig') }}
+    </div>
 </div>
 {% endblock %}
