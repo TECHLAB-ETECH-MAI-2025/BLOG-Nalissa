@@ -1,17 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Categorie index{% endblock %}
+{% block title %}📂 Catégories{% endblock %}
 
 {% block body %}
-    <h1>Categorie index</h1>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">📂 Liste des catégories</h1>
+        <a href="{{ path('app_categorie_new') }}" class="btn btn-success">➕ Nouvelle Catégorie</a>
+    </div>
 
-    <table class="table">
-        <thead>
+    <table class="table table-hover shadow-sm">
+        <thead class="table-light">
             <tr>
-                <th>Id</th>
-                <th>Title</th>
+                <th>ID</th>
+                <th>Titre</th>
                 <th>Description</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,17 +25,16 @@
                 <td>{{ categorie.title }}</td>
                 <td>{{ categorie.description }}</td>
                 <td>
-                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}">show</a>
-                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
+                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}" class="btn btn-sm btn-outline-info">👁️ Voir</a>
+                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}" class="btn btn-sm btn-outline-secondary">✏️ Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4" class="text-muted text-center">Aucune catégorie trouvée.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_categorie_new') }}">Create new</a>
+</div>
 {% endblock %}
